@@ -3,149 +3,255 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Malla Neurofisiología UDELAR</title>
+  <title>Malla Curricular - Neurofisiología Clínica UDELAR</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f5f0;
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f8f3ef;
       margin: 0;
-      padding: 1rem;
-      color: #333;
+      padding: 2rem;
     }
     h1 {
       text-align: center;
-      color: #7b5e57;
+      color: #6a4e42;
     }
     .container {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
       gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
+      margin-top: 2rem;
     }
-    .año {
-      background-color: #fcefe0;
+    .column {
+      background-color: #fff8f0;
       border-radius: 10px;
       padding: 1rem;
-      min-width: 200px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
-    .año h2 {
+    .column h2 {
       text-align: center;
-      color: #a67156;
+      color: #8d6748;
     }
     .materia {
       margin: 0.5rem 0;
-      padding: 0.5rem;
+      padding: 0.6rem;
+      background-color: #fcecd6;
+      border-left: 6px solid #d1a77c;
       border-radius: 5px;
-      background-color: #fff7e6;
       cursor: pointer;
-      transition: 0.2s;
+      position: relative;
     }
     .materia:hover {
-      background-color: #ffe7c4;
+      background-color: #fbe3c2;
     }
     .materia.aprobada {
-      background-color: #c3e6cb;
+      background-color: #d6f5d6;
+      border-left-color: #7cbf7c;
       text-decoration: line-through;
     }
     .materia.bloqueada {
-      background-color: #e2d5d0;
-      color: #888;
+      background-color: #f3f3f3;
+      border-left-color: #ccc;
       cursor: not-allowed;
+      color: #999;
+    }
+    .materia.bloqueada::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #333;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.4rem;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      display: none;
+      z-index: 10;
+    }
+    .materia.bloqueada:hover::after {
+      display: block;
     }
   </style>
 </head>
 <body>
-  <h1>Malla Curricular: Lic. en Neurofisiología Clínica (UDELAR)</h1>
+  <h1>Malla Curricular - Lic. en Neurofisiología Clínica (UDELAR)</h1>
   <div class="container" id="malla"></div>
 
   <script>
     const materias = [
-      { nombre: 'ESFUNO', año: 1, previas: [] },
-      { nombre: 'Psicología', año: 1, previas: [] },
-      { nombre: 'Metodología Científica', año: 1, previas: [] },
-      { nombre: 'Enfermería', año: 1, previas: [] },
-      { nombre: 'Salud Pública', año: 1, previas: [] },
+      // Primer año
+      { nombre: "Biología Celular y Tisular", ciclo: 1, previas: [] },
+      { nombre: "Neurobiología", ciclo: 1, previas: [] },
+      { nombre: "Anatomía Humana", ciclo: 1, previas: [] },
+      { nombre: "Reproductor y Desarrollo", ciclo: 1, previas: [] },
+      { nombre: "Digestivo, Renal y Endócrino", ciclo: 1, previas: [] },
+      { nombre: "Cardiovascular y Respiratorio", ciclo: 1, previas: [] },
+      { nombre: "Psicología", ciclo: 1, previas: [] },
+      { nombre: "Metodología Científica", ciclo: 1, previas: [] },
+      { nombre: "Enfermería", ciclo: 1, previas: [] },
+      { nombre: "Salud Pública", ciclo: 1, previas: [] },
 
-      { nombre: 'Introducción a las Técnicas de Registro', año: 2, previas: ['ESFUNO'] },
-      { nombre: 'Física Electrónica', año: 2, previas: ['ESFUNO'] },
-      { nombre: 'Clínica Neurológica', año: 2, previas: ['ESFUNO'] },
-      { nombre: 'Neurofisiología Básica y Experimental', año: 2, previas: ['ESFUNO'] },
-      { nombre: 'Farmacología', año: 2, previas: ['ESFUNO'] },
-      { nombre: 'Neurofisiología Clínica II', año: 2, previas: ['ESFUNO', 'Neurofisiología Básica y Experimental'] },
-      { nombre: 'Deontología y Legislación', año: 2, previas: [] },
-      { nombre: 'Administración Hospitalaria', año: 2, previas: [] },
+      // Segundo año
+      { nombre: "Introducción a las Técnicas de Registros", ciclo: 2, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Física Electrónica", ciclo: 2, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Clínica Neurológica", ciclo: 2, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Neurofisiología Básica y Experimental", ciclo: 2, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Farmacología", ciclo: 2, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Neurofisiología Clínica I", ciclo: 3, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Deontología y Legislación Laboral", ciclo: 2, previas: [] },
+      { nombre: "Administración Hospitalaria", ciclo: 2, previas: [] },
 
-      { nombre: 'Neurofisiología Clínica I', año: 3, previas: ['ESFUNO'] },
-      { nombre: 'Electroencefalografía en el Niño y Adulto', año: 3, previas: ['Introducción a las Técnicas de Registro'] },
-      { nombre: 'Potenciales Evocados', año: 3, previas: ['Introducción a las Técnicas de Registro', 'Neurofisiología Básica y Experimental', 'Clínica Neurológica'] },
-      { nombre: 'Informática en Neurofisiología', año: 3, previas: ['ESFUNO'] },
+      // Tercer año
+      { nombre: "Electroencefalografía en el Niño y el Adulto", ciclo: 3, previas: ["Introducción a las Técnicas de Registros"] },
+      { nombre: "Potenciales Evocados", ciclo: 3, previas: [
+        "Introducción a las Técnicas de Registros",
+        "Neurofisiología Básica y Experimental",
+        "Clínica Neurológica"
+      ] },
+      { nombre: "Práctica en Neurofisiología", ciclo: 3, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Informática en Neurofisiología", ciclo: 3, previas: [] },
 
-      { nombre: 'Electroencefalografía Cuantitativa y Digital', año: 4, previas: ['ESFUNO'] },
-      { nombre: 'Estudios del Sistema Periférico', año: 4, previas: ['Introducción a las Técnicas de Registro', 'Neurofisiología Clínica II', 'Clínica Neurológica', 'Neurofisiología Básica y Experimental'] },
-      { nombre: 'Polisomnografía Niño y Adulto', año: 4, previas: ['Neurofisiología Clínica II', 'Electroencefalografía en el Niño y Adulto'] },
-      { nombre: 'Monografía', año: 4, previas: 'TODAS' },
+      // Cuarto año
+      { nombre: "Electroencefalografía Cuantitativa y Digital", ciclo: 4, previas: [
+        "Biología Celular y Tisular",
+        "Neurobiología",
+        "Anatomía Humana",
+        "Reproductor y Desarrollo",
+        "Digestivo, Renal y Endócrino",
+        "Cardiovascular y Respiratorio"
+      ] },
+      { nombre: "Estudios del Sistema Periférico", ciclo: 4, previas: [
+        "Introducción a las Técnicas de Registros",
+        "Neurofisiología Clínica I",
+        "Clínica Neurológica",
+        "Neurofisiología Básica y Experimental"
+      ] },
+      { nombre: "Polisomnografía en el Niño y el Adulto", ciclo: 4, previas: [
+        "Neurofisiología Clínica I",
+        "Electroencefalografía en el Niño y el Adulto"
+      ] },
+      { nombre: "Monografía", ciclo: 4, previas: "TODAS" }
     ];
 
-    const aprobadas = new Set(JSON.parse(localStorage.getItem('aprobadas') || '[]'));
+    const aprobadas = new Set(JSON.parse(localStorage.getItem("aprobadas") || "[]"));
 
     function crearMalla() {
-      const malla = document.getElementById('malla');
-      malla.innerHTML = '';
-      const años = [...new Set(materias.map(m => m.año))].sort();
+      const contenedor = document.getElementById("malla");
+      contenedor.innerHTML = "";
 
-      años.forEach(año => {
-        const columna = document.createElement('div');
-        columna.className = 'año';
-        columna.innerHTML = `<h2>${año}° año</h2>`;
+      for (let i = 1; i <= 4; i++) {
+        const col = document.createElement("div");
+        col.className = "column";
+        col.innerHTML = `<h2>Año ${i}</h2>`;
 
-        materias.filter(m => m.año === año).forEach(materia => {
-          const div = document.createElement('div');
-          div.className = 'materia';
+        materias.filter(m => m.ciclo === i).forEach(materia => {
+          const div = document.createElement("div");
+          div.className = "materia";
           div.textContent = materia.nombre;
           div.dataset.nombre = materia.nombre;
-
-          if (aprobadas.has(materia.nombre)) {
-            div.classList.add('aprobada');
-          } else if (!estáDesbloqueada(materia)) {
-            div.classList.add('bloqueada');
-            div.title = tooltipDePrevias(materia);
-          }
-
-          div.onclick = () => {
-            if (div.classList.contains('bloqueada')) return;
-
-            if (div.classList.contains('aprobada')) {
-              aprobadas.delete(materia.nombre);
-              div.classList.remove('aprobada');
-            } else {
-              aprobadas.add(materia.nombre);
-              div.classList.add('aprobada');
-            }
-            localStorage.setItem('aprobadas', JSON.stringify([...aprobadas]));
-            crearMalla();
-          };
-
-          columna.appendChild(div);
+          col.appendChild(div);
         });
+        contenedor.appendChild(col);
+      }
 
-        malla.appendChild(columna);
+      actualizarDesbloqueos();
+    }
+
+    function actualizarDesbloqueos() {
+      document.querySelectorAll('.materia').forEach(div => {
+        const nombre = div.dataset.nombre;
+        const materia = materias.find(m => m.nombre === nombre);
+
+        const previas = materia.previas;
+
+        let desbloqueada = false;
+
+        if (previas === "TODAS") {
+          const todasMenosElla = materias
+            .map(m => m.nombre)
+            .filter(n => n !== nombre);
+          desbloqueada = todasMenosElla.every(n => aprobadas.has(n));
+        } else if (Array.isArray(previas)) {
+          desbloqueada = previas.every(p => aprobadas.has(p)) || previas.length === 0;
+        }
+
+        if (desbloqueada) {
+          div.classList.remove('bloqueada');
+          div.classList.toggle('aprobada', aprobadas.has(nombre));
+          div.removeAttribute('data-tooltip');
+        } else {
+          div.classList.add('bloqueada');
+          div.classList.remove('aprobada');
+          aprobadas.delete(nombre);
+          div.setAttribute('data-tooltip', 'Faltan: ' + (previas === "TODAS"
+            ? 'todas las demás materias'
+            : previas.filter(p => !aprobadas.has(p)).join(', ')));
+        }
       });
+
+      localStorage.setItem("aprobadas", JSON.stringify([...aprobadas]));
     }
 
-    function estáDesbloqueada(materia) {
-      if (materia.previas === 'TODAS') {
-        return materias.every(m => m.nombre === materia.nombre || aprobadas.has(m.nombre));
+    document.addEventListener("click", e => {
+      if (!e.target.classList.contains("materia")) return;
+      const nombre = e.target.dataset.nombre;
+      if (e.target.classList.contains("bloqueada")) return;
+      if (aprobadas.has(nombre)) {
+        aprobadas.delete(nombre);
+      } else {
+        aprobadas.add(nombre);
       }
-      return materia.previas.every(p => aprobadas.has(p));
-    }
-
-    function tooltipDePrevias(materia) {
-      if (materia.previas === 'TODAS') {
-        return 'Debes aprobar todas las materias anteriores.';
-      }
-      const faltantes = materia.previas.filter(p => !aprobadas.has(p));
-      return 'Faltan: ' + faltantes.join(', ');
-    }
+      actualizarDesbloqueos();
+    });
 
     crearMalla();
   </script>
