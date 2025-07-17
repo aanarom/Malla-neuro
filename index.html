@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Neurofisiología UDELAR</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f5f0;
+      margin: 0;
+      padding: 1rem;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #7b5e57;
+    }
+    .container {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .año {
+      background-color: #fcefe0;
+      border-radius: 10px;
+      padding: 1rem;
+      min-width: 200px;
+    }
+    .año h2 {
+      text-align: center;
+      color: #a67156;
+    }
+    .materia {
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 5px;
+      background-color: #fff7e6;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .materia:hover {
+      background-color: #ffe7c4;
+    }
+    .materia.aprobada {
+      background-color: #c3e6cb;
+      text-decoration: line-through;
+    }
+    .materia.bloqueada {
+      background-color: #e2d5d0;
+      color: #888;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Curricular: Lic. en Neurofisiología Clínica (UDELAR)</h1>
+  <div class="container" id="malla"></div>
+
+  <script>
+    const materias = [
+      { nombre: 'ESFUNO', año: 1, previas: [] },
+      { nombre: 'Psicología', año: 1, previas: [] },
+      { nombre: 'Metodología Científica', año: 1, previas: [] },
+      { nombre: 'Enfermería', año: 1, previas: [] },
+      { nombre: 'Salud Pública', año: 1, previas: [] },
+
+      { nombre: 'Introducción a las Técnicas de Registro', año: 2, previas: ['ESFUNO'] },
+      { nombre: 'Física Electrónica', año: 2, previas: ['ESFUNO'] },
+      { nombre: 'Clínica Neurológica', año: 2, previas: ['ESFUNO'] },
+      { nombre: 'Neurofisiología Básica y Experimental', año: 2, previas: ['ESFUNO'] },
+      { nombre: 'Farmacología', año: 2, previas: ['ESFUNO'] },
+      { nombre: 'Neurofisiología Clínica II', año: 2, previas: ['ESFUNO', 'Neurofisiología Básica y Experimental'] },
+      { nombre: 'Deontología y Legislación', año: 2, previas: [] },
+      { nombre: 'Administración Hospitalaria', año: 2, previas: [] },
+
+      { nombre: 'Neurofisiología Clínica I', año: 3, previas: ['ESFUNO'] },
+      { nombre: 'Electroencefalografía en el Niño y Adulto', año: 3, previas: ['Introducción a las Técnicas de Registro'] },
+      { nombre: 'Potenciales Evocados', año: 3, previas: ['Introducción a las Técnicas de Registro', 'Neurofisiología Básica y Experimental', 'Clínica Neurológica'] },
+      { nombre: 'Informática en Neurofisiología', año: 3, previas: ['ESFUNO'] },
+
+      { nombre: 'Electroencefalografía Cuantitativa y Digital', año: 4, previas: ['ESFUNO'] },
+      { nombre: 'Estudios del Sistema Periférico', año: 4, previas: ['Introducción a las Técnicas de Registro', 'Neurofisiología Clínica II', 'Clínica Neurológica', 'Neurofisiología Básica y Experimental'] },
+      { nombre: 'Polisomnografía Niño y Adulto', año: 4, previas: ['Neurofisiología Clínica II', 'Electroencefalografía en el Niño y Adulto'] },
+      { nombre: 'Monografía', año: 4, previas: 'TODAS' },
+    ];
+
+    const aprobadas = new Set(JSON.parse(localStorage.getItem('aprobadas') || '[]'));
+
+    function crearMalla() {
+      const malla = document.getElementById('malla');
+      malla.innerHTML = '';
+      const años = [...new Set(materias.map(m => m.año))].sort();
+
+      años.forEach(año => {
+        const columna = document.createElement('div');
+        columna.className = 'año';
+        columna.innerHTML = `<h2>${año}° año</h2>`;
+
+        materias.filter(m => m.año === año).forEach(materia => {
+          const div = document.createElement('div');
+          div.className = 'materia';
+          div.textContent = materia.nombre;
+          div.dataset.nombre = materia.nombre;
+
+          if (aprobadas.has(materia.nombre)) {
+            div.classList.add('aprobada');
+          } else if (!estáDesbloqueada(materia)) {
+            div.classList.add('bloqueada');
+            div.title = tooltipDePrevias(materia);
+          }
+
+          div.onclick = () => {
+            if (div.classList.contains('bloqueada')) return;
+
+            if (div.classList.contains('aprobada')) {
+              aprobadas.delete(materia.nombre);
+              div.classList.remove('aprobada');
+            } else {
+              aprobadas.add(materia.nombre);
+              div.classList.add('aprobada');
+            }
+            localStorage.setItem('aprobadas', JSON.stringify([...aprobadas]));
+            crearMalla();
+          };
+
+          columna.appendChild(div);
+        });
+
+        malla.appendChild(columna);
+      });
+    }
+
+    function estáDesbloqueada(materia) {
+      if (materia.previas === 'TODAS') {
+        return materias.every(m => m.nombre === materia.nombre || aprobadas.has(m.nombre));
+      }
+      return materia.previas.every(p => aprobadas.has(p));
+    }
+
+    function tooltipDePrevias(materia) {
+      if (materia.previas === 'TODAS') {
+        return 'Debes aprobar todas las materias anteriores.';
+      }
+      const faltantes = materia.previas.filter(p => !aprobadas.has(p));
+      return 'Faltan: ' + faltantes.join(', ');
+    }
+
+    crearMalla();
+  </script>
+</body>
+</html>
